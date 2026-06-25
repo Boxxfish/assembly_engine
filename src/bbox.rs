@@ -1,10 +1,12 @@
 use glam::{Mat4, Quat, Vec3, Vec4Swizzles};
 use ordered_float::OrderedFloat;
-use pyo3::prelude::*;
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
+
 /// An axis-aligned bounding box.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct AABB {
     pub center: Vec3,
@@ -62,7 +64,7 @@ impl AABB {
 }
 
 /// A oriented bounding box.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct OBB {
     pub center: Vec3,

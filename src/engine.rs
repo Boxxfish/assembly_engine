@@ -4,8 +4,10 @@ use crate::bbox::{AABB, OBB};
 use crate::connectors::{CLIP_LENGTH, Connector};
 use crate::octree::Octree;
 use glam::{Mat4, Quat, Vec3};
-use pyo3::prelude::*;
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "pyo3")]
+use pyo3::prelude::*;
 
 /// Indiciates an axis of rotational symmetry for a part.
 ///
@@ -29,24 +31,13 @@ pub struct RotSym {
 }
 
 /// Represents a single part, in isolation.
-#[pyclass]
+///
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Part {
     pub bboxes: Vec<AABB>,
     pub connectors: Vec<Connector>,
     pub rot_syms: Vec<RotSym>,
-}
-
-#[pymethods]
-impl Part {
-    #[staticmethod]
-    pub fn from_json(json_str: &str) -> Self {
-        serde_json::from_str(json_str).unwrap()
-    }
-
-    pub fn to_json(&self) -> String {
-        serde_json::to_string(self).unwrap()
-    }
 }
 
 /// Represents a placed part.
@@ -95,7 +86,7 @@ impl Placement {
 }
 
 /// Represents a connection to another part.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Copy, Clone)]
 pub struct ConnectedTo {
     pub placement_idx: usize,
@@ -103,49 +94,32 @@ pub struct ConnectedTo {
 }
 
 /// Constrains the placements returned by the query.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Clone, Default)]
 pub struct Query {
     /// If present, limits placements to only those that use this part.
-    #[pyo3(get)]
     pub part_id: Option<usize>,
     /// If present, limits placements to only those that are attached to this placement.
-    #[pyo3(get)]
     pub anchor_idx: Option<usize>,
     /// If true, returns only the first placement found.
     /// This is faster than requesting all placements.
-    #[pyo3(get)]
     pub single: bool,
 }
 
-#[pymethods]
-impl Query {
-    #[new]
-    fn new(part_id: Option<usize>, anchor_idx: Option<usize>, single: bool) -> Self {
-        Self {
-            part_id,
-            anchor_idx,
-            single,
-        }
-    }
-}
-
 /// Represents an assembled model, consisting of placed parts.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Clone)]
 pub struct AssembledModel {
     pub placements: Vec<Placement>,
 }
 
 /// Configuration options for an `AssemblyEngine`.
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssemblyEngineConfig {
     /// The number of turns to consider when generating candidates.
-    #[pyo3(get)]
     pub num_candidate_turns: u32,
     /// The number of increments on a bar to consider when generating candidates.
-    #[pyo3(get)]
     pub bar_increment_every: f32,
 }
 
@@ -158,18 +132,7 @@ impl Default for AssemblyEngineConfig {
     }
 }
 
-#[pymethods]
-impl AssemblyEngineConfig {
-    #[new]
-    pub fn new(num_candidate_turns: u32, bar_increment_every: f32) -> Self {
-        Self {
-            num_candidate_turns,
-            bar_increment_every,
-        }
-    }
-}
-
-#[pyclass]
+#[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Clone)]
 pub struct EngineState {
     model: AssembledModel,
