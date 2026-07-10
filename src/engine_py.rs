@@ -45,11 +45,8 @@ impl Query {
 #[pymethods]
 impl AssemblyEngineConfig {
     #[new]
-    pub fn new(num_candidate_turns: u32, bar_increment_every: f32) -> Self {
-        Self {
-            num_candidate_turns,
-            bar_increment_every,
-        }
+    pub fn new_py(num_candidate_turns: u32, bar_increment_every: f32) -> Self {
+        Self::new(num_candidate_turns, bar_increment_every)
     }
 
     /// The number of turns to consider when generating candidates.

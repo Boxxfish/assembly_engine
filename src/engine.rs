@@ -132,6 +132,15 @@ impl Default for AssemblyEngineConfig {
     }
 }
 
+impl AssemblyEngineConfig {
+    pub fn new(num_candidate_turns: u32, bar_increment_every: f32) -> Self {
+        Self {
+            num_candidate_turns,
+            bar_increment_every,
+        }
+    }
+}
+
 #[cfg_attr(feature = "pyo3", pyclass)]
 #[derive(Debug, Clone)]
 pub struct EngineState {

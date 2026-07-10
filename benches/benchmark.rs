@@ -17,7 +17,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     let part_ids = [3003, 3004, 3005, 3009, 3010, 3020];
     let mut parts = Vec::new();
     for part_id in part_ids {
-        let part_path = format!("../part_converter/output/{part_id}.json");
+        let part_path = format!("./temp/parts/{part_id}.json");
         let mut file = std::fs::File::open(part_path).unwrap();
         let part: Part = serde_json::from_reader(&mut file).unwrap();
         parts.push(part);
